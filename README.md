@@ -17,7 +17,7 @@ $patcher = new Patcher();
 $patcher->patchMethod('time', function () {
     return 100;
 });
-$patcher->whiteListDirectory(__DIR__ . '/src);
+$patcher->whiteListDirectory(__DIR__ . '/src');
 $patcher->autoPatch();
 
 include 'src/....';
@@ -35,7 +35,7 @@ $patcher->patchMethod('time', function ($method, $arguments, $original) {
     error_log("Time: $time");
     return $time;
 });
-$patcher->whiteListDirectory(__DIR__ . '/src);
+$patcher->whiteListDirectory(__DIR__ . '/src');
 $patcher->autoPatch();
 
 include 'src/....';
