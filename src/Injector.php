@@ -73,10 +73,21 @@ class Injector {
 		$code = str_replace('__NAMESPACE__', $namespace, $this->template);
 		$code = str_replace('__METHOD__', $method, $code);
 		$code = str_replace('__INJECTORID__', $this->injectorId, $code);
-		/** @var callable $injectorMethod */
-		$result = @eval($code);
+		$result = $this->loadCode($code);
 		if ($result === false) {
 			throw new InjectException('Failed to inject method "' . $method . '" into namespace "' . $namespace . '"');
+		}
+	}
+
+	private function loadCode($code) {
+		if (class_exists('\ParseError')) {
+			try {
+				return @eval($code);
+			} catch (\ParseError $e) {
+				return false;
+			}
+		} else {
+			return @eval($code);
 		}
 	}
 

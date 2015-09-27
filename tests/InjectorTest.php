@@ -7,7 +7,6 @@
 
 namespace Icewind\Patcher\Tests;
 
-use Icewind\Patcher\InjectException;
 use Icewind\Patcher\Injector;
 
 class InjectorTest extends TestCase {
