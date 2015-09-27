@@ -33,4 +33,10 @@ class PatcherTest extends TestCase {
 		$this->assertEquals(100, \Auto\Test\test());
 		$this->assertEquals(100, $method());
 	}
+
+	public function testAutoPatchOnlyOnce() {
+		$instance = new Patcher();
+		$instance->autoPatch();
+		$instance->autoPatch();
+	}
 }

@@ -7,6 +7,7 @@
 
 namespace Icewind\Patcher\Tests;
 
+use Icewind\Patcher\InjectException;
 use Icewind\Patcher\Injector;
 
 class InjectorTest extends TestCase {
@@ -40,5 +41,16 @@ class InjectorTest extends TestCase {
 		$instance->injectInNamespace('Icewind\Patcher\Tests');
 
 		$this->assertEquals([1, 3], array_push([1], 2));
+	}
+
+	/**
+	 * @expectedException \Icewind\Patcher\InjectException
+	 */
+	public function testInvalidMethodName() {
+		$instance = new Injector();
+		$instance->addMethod('1', function () {
+			return true;
+		});
+		$instance->injectInNamespace('Icewind\Patcher\Tests');
 	}
 }

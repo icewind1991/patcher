@@ -74,7 +74,7 @@ class Injector {
 		$code = str_replace('__METHOD__', $method, $code);
 		$code = str_replace('__INJECTORID__', $this->injectorId, $code);
 		/** @var callable $injectorMethod */
-		$result = eval($code);
+		$result = @eval($code);
 		if ($result === false) {
 			throw new InjectException('Failed to inject method "' . $method . '" into namespace "' . $namespace . '"');
 		}
