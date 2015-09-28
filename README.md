@@ -6,6 +6,10 @@
 
 Replace build in php functions
 
+```
+composer require icewind/patcher
+```
+
 ## Usage
 
 ### Overwriting a method
