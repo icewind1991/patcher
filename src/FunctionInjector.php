@@ -59,21 +59,27 @@ class FunctionInjector extends AbstractInjector {
 		$code = str_replace('__NAMESPACE__', $namespace, $this->functionTemplate);
 		$code = str_replace('__METHOD__', $method, $code);
 		$code = str_replace('__INJECTORID__', $this->injectorId, $code);
-		$result = $this->loadCode($code);
-		if ($result === false) {
-			throw new InjectException('Failed to inject method "' . $method . '" into namespace "' . $namespace . '"');
-		}
+		$this->loadCode($code, 'Failed to inject method "' . $method . '" into namespace "' . $namespace . '"');
 	}
 
-	private function loadCode($code) {
+	/**
+	 * @param string $code
+	 * @param string $errorMessage
+	 * @return mixed the value returned from the loaded code
+	 * @throws InjectException
+	 */
+	private function loadCode($code, $errorMessage) {
 		if (class_exists('\ParseError')) {
 			try {
 				return @eval($code);
 			} catch (\ParseError $e) {
-				return false;
+				throw new InjectException($errorMessage);
 			}
 		} else {
-			return @eval($code);
+			$result = @eval($code);
+			if ($result === false) {
+				throw new InjectException($errorMessage);
+			}
 		}
 	}
 
