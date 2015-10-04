@@ -7,7 +7,7 @@
 
 namespace Icewind\Patcher;
 
-class Injector {
+class FunctionInjector extends AbstractInjector {
 	/**
 	 * The methods we inject and the handlers for them
 	 *
@@ -18,16 +18,11 @@ class Injector {
 	/**
 	 * @var string
 	 */
-	private $template;
-
-	/**
-	 * @var string
-	 */
-	private $injectorId;
+	private $functionTemplate;
 
 	public function __construct() {
-		$this->template = file_get_contents(__DIR__ . '/InjectTemplate.php');
-		$this->injectorId = uniqid();
+		parent::__construct();
+		$this->functionTemplate = file_get_contents(__DIR__ . '/FunctionInjectTemplate.php');
 	}
 
 	/**
@@ -54,15 +49,6 @@ class Injector {
 	}
 
 	/**
-	 * register this injector as global so we can access it from inside the injected method
-	 */
-	private function registerGlobal() {
-		if (!isset($GLOBALS[$this->injectorId])) {
-			$GLOBALS[$this->injectorId] = $this;
-		}
-	}
-
-	/**
 	 * Inject a method into a namespace
 	 *
 	 * @param string $namespace
@@ -70,7 +56,7 @@ class Injector {
 	 * @throws InjectException
 	 */
 	protected function injectMethodInNamespace($namespace, $method) {
-		$code = str_replace('__NAMESPACE__', $namespace, $this->template);
+		$code = str_replace('__NAMESPACE__', $namespace, $this->functionTemplate);
 		$code = str_replace('__METHOD__', $method, $code);
 		$code = str_replace('__INJECTORID__', $this->injectorId, $code);
 		$result = $this->loadCode($code);
@@ -96,6 +82,7 @@ class Injector {
 	 *
 	 * @param string $method the method that was called
 	 * @param array $arguments the arguments the method is called with
+	 * @return mixed
 	 */
 	public function handleCall($method, array $arguments) {
 		$original = function () use ($method, $arguments) {

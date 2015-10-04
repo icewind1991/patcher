@@ -11,9 +11,14 @@ use Icewind\Interceptor\Interceptor;
 
 class Patcher {
 	/**
-	 * @var Injector
+	 * @var FunctionInjector
 	 */
-	private $injector;
+	private $functionInjector;
+
+	/**
+	 * @var ClassInjector
+	 */
+	private $classInjector;
 
 	/**
 	 * @var Interceptor
@@ -31,7 +36,8 @@ class Patcher {
 	 * Patcher constructor.
 	 */
 	public function __construct() {
-		$this->injector = new Injector();
+		$this->functionInjector = new FunctionInjector();
+		$this->classInjector = new ClassInjector();
 		$this->interceptor = new Interceptor();
 		$this->namespaceExtractor = new NamespaceExtractor($this->interceptor);
 	}
@@ -39,20 +45,21 @@ class Patcher {
 	/**
 	 * Patch a method
 	 *
-	 * @param string $method
-	 * @param callable $handler
+	 * @param string $method the name of the function to be patched
+	 * @param callable $handler the function that will handle any calls to the patched function
 	 */
 	public function patchMethod($method, $handler) {
-		$this->injector->addMethod($method, $handler);
+		$this->functionInjector->addMethod($method, $handler);
 	}
 
 	/**
-	 * Apply all patched methods to a namespace
+	 * Patch a class
 	 *
-	 * @param string $namespace
+	 * @param string $class the name of the class to be replaced
+	 * @param string $replacement the class name for the replacement class
 	 */
-	public function patchForNamespace($namespace) {
-		$this->injector->injectInNamespace($namespace);
+	public function patchClass($class, $replacement) {
+		$this->classInjector->addClass($class, $replacement);
 	}
 
 	/**
@@ -74,8 +81,9 @@ class Patcher {
 			return;
 		}
 		$this->autoPatchEnabled = true;
-		$this->namespaceExtractor->addListener([$this->injector, 'injectInNamespace']);
+		$this->namespaceExtractor->addListener([$this->functionInjector, 'injectInNamespace']);
 		$this->namespaceExtractor->registerHook();
+		$this->interceptor->addHook([$this->classInjector, 'injectInCode']);
 		$this->interceptor->setUp();
 	}
 }

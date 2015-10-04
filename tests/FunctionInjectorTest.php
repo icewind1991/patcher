@@ -7,11 +7,11 @@
 
 namespace Icewind\Patcher\Tests;
 
-use Icewind\Patcher\Injector;
+use Icewind\Patcher\FunctionInjector;
 
-class InjectorTest extends TestCase {
+class FunctionInjectorTest extends TestCase {
 	public function testBasicInject() {
-		$instance = new Injector();
+		$instance = new FunctionInjector();
 		$instance->addMethod('time', function () {
 			return 100;
 		});
@@ -21,7 +21,7 @@ class InjectorTest extends TestCase {
 	}
 
 	public function testUseOriginal() {
-		$instance = new Injector();
+		$instance = new FunctionInjector();
 		$instance->addMethod('count', function ($method, $arguments, $original) {
 			return $original() + 1;
 		});
@@ -31,7 +31,7 @@ class InjectorTest extends TestCase {
 	}
 
 	public function testHandlerParams() {
-		$instance = new Injector();
+		$instance = new FunctionInjector();
 		$instance->addMethod('array_push', function ($method, $arguments, $original) {
 			$this->assertEquals('array_push', $method);
 			$this->assertEquals([[1], 2], $arguments);
@@ -46,7 +46,7 @@ class InjectorTest extends TestCase {
 	 * @expectedException \Icewind\Patcher\InjectException
 	 */
 	public function testInvalidMethodName() {
-		$instance = new Injector();
+		$instance = new FunctionInjector();
 		$instance->addMethod('1', function () {
 			return true;
 		});

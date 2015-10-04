@@ -45,6 +45,25 @@ $patcher->autoPatch();
 include 'src/....';
 ```
 
+### Overwriting a class
+
+```php
+use Icewind\Patcher\Patcher;
+
+class DummyDateTime extends DateTime {
+	public function __construct() {
+		parent::__construct("1970-01-01 00:00:00 UTC");
+	}
+}
+
+$patcher = new Patcher();
+$patcher->patchClass('\DateTime', '\DummyDateTime');
+$patcher->whiteListDirectory(__DIR__ . '/src');
+$patcher->autoPatch();
+
+include 'src/....';
+```
+
 ## API
 
 - `patchMethod(string $method, callable $handler)`: Set the handler for a method
@@ -52,8 +71,9 @@ include 'src/....';
   - `string $method` the name of the method being called
   - `array $arguments` the arguments the method was called with
   - `callable $original` a closure which will call the overwriten method with the correct arguments and return the result
+- `patchClass(string $method, string $replacement)`: Overwrite a class with a different one
+  - Note, at the moment this only works with classes in the global namespace
 - `whiteListDirectory(string $path)`: Add a directory to the whitelist for the auto patcher
-- `patchForNamespace(string $namespace)`: Apply all patched methods to a namespace
 - `autoPatch()`: Enable auto patching for all files included from this point
  - Automatically apply the patch methods for any namespace defined
  - Will only be applied for files within a whitelisted directory

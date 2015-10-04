@@ -21,7 +21,7 @@ abstract class TestCase extends \PHPUnit_Framework_TestCase {
 
 	protected function tempNam($postFix = '') {
 		$id = uniqid();
-		$file = tempnam(sys_get_temp_dir(), $id . $postFix);
+		$file = tempnam(sys_get_temp_dir(), $id) . $postFix;
 		$tmpFiles[] = $file;
 		return $file;
 	}
