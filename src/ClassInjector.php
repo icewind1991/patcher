@@ -12,7 +12,7 @@ class ClassInjector extends AbstractInjector {
 	/**
 	 * The classes we inject and their handlers
 	 *
-	 * @var callable[]
+	 * @var string[]
 	 */
 	private $classes = [];
 
@@ -28,6 +28,10 @@ class ClassInjector extends AbstractInjector {
 		$this->classes[$class] = $targetClass;
 	}
 
+	/**
+	 * @param string $code
+	 * @return string
+	 */
 	public function injectInCode($code) {
 		$this->registerGlobal();
 		return array_reduce(array_keys($this->classes), function ($code, $class) {
