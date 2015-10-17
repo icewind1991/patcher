@@ -86,4 +86,8 @@ class Patcher {
 		$this->interceptor->addHook([$this->classInjector, 'injectInCode']);
 		$this->interceptor->setUp();
 	}
+
+	public function __destruct() {
+		$this->interceptor->tearDown();
+	}
 }
