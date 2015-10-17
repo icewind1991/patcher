@@ -73,7 +73,8 @@ include 'src/....';
   - `callable $original` a closure which will call the overwriten method with the correct arguments and return the result
 - `patchClass(string $method, string $replacement)`: Overwrite a class with a different one
   - Note, at the moment this only works with classes in the global namespace
-- `whiteListDirectory(string $path)`: Add a directory to the whitelist for the auto patcher
+- `whiteListDirectory(string $path)`: Add a directory to the white list for the auto patcher
+- `blackListDirectory(string $path)`: Add a directory to the black list for the auto patcher
 - `autoPatch()`: Enable auto patching for all files included from this point
  - Automatically apply the patch methods for any namespace defined
  - Will only be applied for files within a whitelisted directory

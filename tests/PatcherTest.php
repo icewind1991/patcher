@@ -22,9 +22,17 @@ class PatcherTest extends TestCase {
 	private $patcher;
 
 	public function setUp() {
+		if ($this->patcher) {
+			$this->patcher->__destruct();
+			$this->patcher = null;
+		}
 		$this->patcher = new Patcher();
 		$this->patcher->whiteListDirectory(__DIR__ . '/data');
 		$this->patcher->autoPatch();
+	}
+
+	public function tearDown() {
+		$this->patcher = null;
 	}
 
 	public function testAutoPatchFunction() {
@@ -38,6 +46,17 @@ class PatcherTest extends TestCase {
 		$this->assertEquals(100, $method());
 	}
 
+	public function testBlackList() {
+		$this->patcher->blackListDirectory(__DIR__ . '/data');
+		$this->patcher->patchMethod('usleep', function () {
+			return 100;
+		});
+
+		/** @var callable $method */
+		$method = include 'data/blacklistFolderTest.php';
+		$this->assertNotEquals(100, $method());
+	}
+
 	public function testAutoPatchClass() {
 		$this->patcher->patchClass('\DateTime', '\Icewind\Patcher\Tests\AutoPatchClassDummy');
 
@@ -48,8 +67,6 @@ class PatcherTest extends TestCase {
 	}
 
 	public function testAutoPatchOnlyOnce() {
-		$instance = new Patcher();
-		$instance->autoPatch();
-		$instance->autoPatch();
+		$this->patcher->autoPatch();
 	}
 }

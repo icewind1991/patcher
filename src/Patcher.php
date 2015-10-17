@@ -63,12 +63,21 @@ class Patcher {
 	}
 
 	/**
-	 * Add a directory to the autoPatch whitelist
+	 * Add a directory to the autoPatch white list
 	 *
 	 * @param string $path
 	 */
 	public function whiteListDirectory($path) {
 		$this->interceptor->addWhiteList($path);
+	}
+
+	/**
+	 * Add a directory to the autoPatch black list
+	 *
+	 * @param string $path
+	 */
+	public function blackListDirectory($path) {
+		$this->interceptor->addBlackList($path);
 	}
 
 	/**
