@@ -30,15 +30,24 @@ class Patcher {
 	 */
 	private $namespaceExtractor;
 
+	/**
+	 * @var bool
+	 */
 	private $autoPatchEnabled = false;
 
 	/**
 	 * Patcher constructor.
+	 *
+	 * @param Interceptor|null $interceptor
 	 */
-	public function __construct() {
+	public function __construct($interceptor = null) {
 		$this->functionInjector = new FunctionInjector();
 		$this->classInjector = new ClassInjector();
-		$this->interceptor = new Interceptor();
+		if ($interceptor instanceof Interceptor) {
+			$this->interceptor = $interceptor;
+		} else {
+			$this->interceptor = new Interceptor();
+		}
 		$this->namespaceExtractor = new NamespaceExtractor($this->interceptor);
 	}
 
@@ -94,6 +103,13 @@ class Patcher {
 		$this->namespaceExtractor->registerHook();
 		$this->interceptor->addHook([$this->classInjector, 'injectInCode']);
 		$this->interceptor->setUp();
+	}
+
+	/**
+	 * @return Interceptor
+	 */
+	public function getInterceptor() {
+		return $this->interceptor;
 	}
 
 	public function __destruct() {

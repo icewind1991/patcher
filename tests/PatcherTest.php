@@ -7,6 +7,7 @@
 
 namespace Icewind\Patcher\Tests;
 
+use Icewind\Interceptor\Interceptor;
 use Icewind\Patcher\Patcher;
 
 class AutoPatchClassDummy extends \DateTime {
@@ -68,5 +69,11 @@ class PatcherTest extends TestCase {
 
 	public function testAutoPatchOnlyOnce() {
 		$this->patcher->autoPatch();
+	}
+
+	public function testInjectInterceptor() {
+		$interceptor = new Interceptor();
+		$patcher = new Patcher($interceptor);
+		$this->assertSame($interceptor, $patcher->getInterceptor());
 	}
 }
